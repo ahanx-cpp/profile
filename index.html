@@ -103,7 +103,7 @@
     <div class="status">
       SYSTEM STATUS : NORMAL<br/>
       USER : <span id="user-text" style="cursor:pointer;">VISITOR MODE</span><br/>
-      TIME : <span id="live-time">--/--/-- --:--:--</span><br/>
+      TIME : <span id="live-time">--/--/-- --:--:--.---</span><br/>
       © 2026 AHan.
     </div>
   </aside>
@@ -132,8 +132,10 @@
 </div>
 
 <script>
-// ====== 实时时钟 ======
+// ====== 实时时钟（精确到毫秒） ======
 function pad(n) { return String(n).padStart(2,'0'); }
+function padMilliseconds(n) { return String(n).padStart(3,'0'); }
+
 function updateClock() {
   const now = new Date();
   const y = now.getFullYear();
@@ -142,10 +144,12 @@ function updateClock() {
   const h = pad(now.getHours());
   const min = pad(now.getMinutes());
   const s = pad(now.getSeconds());
-  document.getElementById('live-time').textContent = `${y}/${m}/${d} ${h}:${min}:${s}`;
+  const ms = padMilliseconds(now.getMilliseconds());
+  document.getElementById('live-time').textContent = `${y}/${m}/${d} ${h}:${min}:${s}.${ms}`;
 }
 updateClock();
-setInterval(updateClock, 1000);
+// 每50毫秒刷新一次，保证毫秒值平滑变化
+setInterval(updateClock, 50);
 
 // ====== 计算公元元年元日到今天的日数差 ======
 function getDaysSinceEpoch() {
@@ -193,13 +197,13 @@ function handleSubmit() {
     // 3秒后关闭对话框
     setTimeout(() => {
       closeModal();
-    }, 2000);
+    }, 2500);
   } else {
     // KEY错误
     modalMessage.textContent = 'KEY IS WRONG.';
     setTimeout(() => {
       closeModal();
-    }, 1500);
+    }, 1200);
   }
 }
 
